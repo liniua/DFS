@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6b926344-7d62-4c8b-a2b0-b456d007f1b4" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/NameNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/NameNode.java" afterDir="false" />
-    </list>
+    <list default="true" id="6b926344-7d62-4c8b-a2b0-b456d007f1b4" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -223,7 +221,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="33432000" />
+    <option name="totallyTimeSpent" value="33892000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="40" y="23" width="1400" height="753" extended-state="0" />
