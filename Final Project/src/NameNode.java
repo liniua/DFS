@@ -3,6 +3,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class NameNode extends UnicastRemoteObject implements INameNode {
     // port -> datanode
@@ -64,7 +65,7 @@ public class NameNode extends UnicastRemoteObject implements INameNode {
             owner_port = this.latestDatanode.get(fileName);
 
 //TODO    set a timeout: if the datanode doesn't response in 10 seconds,
-//        get another datanode who has the file (but may be not int he latest version)
+//        get another datanode who has the file (but may be not in the latest version)
 
 //            long endTimeMillis = System.currentTimeMillis() + 10000;
 //            while (true) {
