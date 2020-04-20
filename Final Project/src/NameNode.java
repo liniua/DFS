@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -60,10 +61,13 @@ public class NameNode extends UnicastRemoteObject implements INameNode {
     public byte[] openFile(String fileName, int dn_port) throws RemoteException {
 
         int owner_port;
-
+        System.out.println("To open file : " + fileName);
         if (!this.latestDatanode.containsKey(fileName)
                 || this.fileToDataNode.get(fileName) == null
                 || this.fileToDataNode.get(fileName).size() == 0) {
+            System.out.println("latestDatanode: " + latestDatanode);
+            System.out.println("this.fileToDataNode.get(fileName): " + this.fileToDataNode.get(fileName));
+            System.out.println("There is no such a file.");
             return new byte[0];
         } else {
 
@@ -103,7 +107,8 @@ public class NameNode extends UnicastRemoteObject implements INameNode {
     public void updateMetadata(String fileName, int dn_port, String newVersion) throws RemoteException {
         // update the filename -> datanode that modified it most recently.
         this.latestDatanode.put(fileName, dn_port);
-        // add the most recent datanode into the queue that contains at most 3 datanodes that keep the file.
+        this.version.put(fileName, newVersion);
+                // add the most recent datanode into the queue that contains at most 3 datanodes that keep the file.
         if (!this.fileToDataNode.containsKey(fileName)) {
             this.fileToDataNode.put(fileName, new LinkedList<>());
         }
@@ -112,7 +117,6 @@ public class NameNode extends UnicastRemoteObject implements INameNode {
         if (keepers.size() > ReplicaNumber) {
             keepers.poll();
         }
-        this.version.put(fileName, newVersion);
         System.out.println("fileToDataNode: " + this.fileToDataNode);
         System.out.println("latestDatanode: " + this.latestDatanode);
         System.out.println("version: " + this.version);

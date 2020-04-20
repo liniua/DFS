@@ -1,3 +1,4 @@
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -14,5 +15,6 @@ public interface IDataNode extends Remote {
     String getResponse(String req) throws RemoteException;
 
     Acceptor getAcceptor() throws RemoteException;
+
 
 }
