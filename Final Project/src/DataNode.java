@@ -47,40 +47,17 @@ public class DataNode extends UnicastRemoteObject implements IDataNode {
 
     @Override
     public boolean hasLatestVersion(String fileName) throws RemoteException {
-        if (this.nd == null) {
-            try {
-                this.nd = (INameNode) Naming.lookup("rmi://localhost:5010/namenode");
 
-            } catch (MalformedURLException murle) {
-                System.out.println();
-                System.out.println(
-                        "MalformedURLException");
-                System.out.println("Invalid port number, please restart with a valid port number.");
-            }
-            catch (RemoteException re) {
-                System.out.println();
-                System.out.println(
-                        "RemoteException");
-                System.out.println("The nameNode is down!");
-            }
-            catch (NotBoundException nbe) {
-                System.out.println();
-                System.out.println(
-                        "NotBoundException");
-                System.out.println("The nameNode on this port number is down! please try another port.");
-            }
-            catch (ArithmeticException ae) {
-                System.out.println();
-                System.out.println(
-                        "java.lang.ArithmeticException");
-                System.out.println(ae);
-            }
-        }
-        return this.nd.getVersion(fileName).equals(this.version.get(fileName));
+        String latestVersion = this.nd.getVersion(fileName);
+        return latestVersion != null && latestVersion.equals(this.version.get(fileName));
     }
 
     @Override
     public String read(String fileName) throws RemoteException {
+
+        if (this.nd == null) {
+            getNameNode();
+        }
 
         // The file is in the local disk with the latest version.
         if (ifExist(fileName) && hasLatestVersion(fileName)){
@@ -111,6 +88,8 @@ public class DataNode extends UnicastRemoteObject implements IDataNode {
             byte[] read_buffer = this.nd.openFile(fileName, this.port);
             String content = new String(read_buffer);
 
+            if (content.length() == 0) return "The file doesn't exit in the system.";
+
             //write to local disk
             this.files.add(fileName);
             this.version.put(fileName, nd.getVersion(fileName));
@@ -126,34 +105,9 @@ public class DataNode extends UnicastRemoteObject implements IDataNode {
 
     @Override
     public String write(String fileName, String data) throws RemoteException {
-        if (this.nd == null) {
-            try {
-                this.nd = (INameNode) Naming.lookup("rmi://localhost:5010/namenode");
 
-            } catch (MalformedURLException murle) {
-                System.out.println();
-                System.out.println(
-                        "MalformedURLException");
-                System.out.println("Invalid port number, please restart with a valid port number.");
-            }
-            catch (RemoteException re) {
-                System.out.println();
-                System.out.println(
-                        "RemoteException");
-                System.out.println("The nameNode is down!");
-            }
-            catch (NotBoundException nbe) {
-                System.out.println();
-                System.out.println(
-                        "NotBoundException");
-                System.out.println("The nameNode on this port number is down! please try another port.");
-            }
-            catch (ArithmeticException ae) {
-                System.out.println();
-                System.out.println(
-                        "java.lang.ArithmeticException");
-                System.out.println(ae);
-            }
+        if (this.nd == null) {
+            getNameNode();
         }
 
         // The file already exists.
@@ -228,5 +182,35 @@ public class DataNode extends UnicastRemoteObject implements IDataNode {
             e.printStackTrace();
         }
 
+    }
+
+    private void getNameNode() {
+        try {
+            this.nd = (INameNode) Naming.lookup("rmi://localhost:5010/namenode");
+
+        } catch (MalformedURLException murle) {
+            System.out.println();
+            System.out.println(
+                    "MalformedURLException");
+            System.out.println("Invalid port number, please restart with a valid port number.");
+        }
+        catch (RemoteException re) {
+            System.out.println();
+            System.out.println(
+                    "RemoteException");
+            System.out.println("The nameNode is down!");
+        }
+        catch (NotBoundException nbe) {
+            System.out.println();
+            System.out.println(
+                    "NotBoundException");
+            System.out.println("The nameNode on this port number is down! please try another port.");
+        }
+        catch (ArithmeticException ae) {
+            System.out.println();
+            System.out.println(
+                    "java.lang.ArithmeticException");
+            System.out.println(ae);
+        }
     }
 }
