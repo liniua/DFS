@@ -44,6 +44,11 @@ public class NameNode extends UnicastRemoteObject implements INameNode {
     }
 
     @Override
+    public  Map<String, Queue<Integer>> getFileToDataNode() throws RemoteException {
+        return this.fileToDataNode;
+    }
+
+    @Override
     public boolean ifExist(String fileName) throws RemoteException {
         return this.latestDatanode.containsKey(fileName);
 
