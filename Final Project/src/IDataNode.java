@@ -13,5 +13,6 @@ public interface IDataNode extends Remote {
 
     String getResponse(String req) throws RemoteException;
 
+    Acceptor getAcceptor() throws RemoteException;
 
 }

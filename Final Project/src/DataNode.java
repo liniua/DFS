@@ -15,6 +15,7 @@ public class DataNode extends UnicastRemoteObject implements IDataNode {
     public int port;
     public List<String> files;
     public Map<String, String> version;
+    private Acceptor acceptor;
 
     private INameNode nd;
 
@@ -22,6 +23,8 @@ public class DataNode extends UnicastRemoteObject implements IDataNode {
         this.port = port;
         this.version = new HashMap<>();
         this.files = new ArrayList<>();
+
+        this.acceptor = new Acceptor(port);
 
 
         File f = new File("filesInDataNode" + this.port);
@@ -37,6 +40,15 @@ public class DataNode extends UnicastRemoteObject implements IDataNode {
             this.files.add(line);
         }
         br.close();
+    }
+
+    @Override
+    public Acceptor getAcceptor() {
+        // if the acceptor failed, generate a new acceptor
+        if (acceptor.failure()) {
+            this.acceptor = new Acceptor(this.port);
+        }
+        return this.acceptor;
     }
 
     @Override
@@ -136,6 +148,16 @@ public class DataNode extends UnicastRemoteObject implements IDataNode {
 
     @Override
     public String getResponse(String req) throws RemoteException {
+
+        String output = "No content.";
+        Proposer proposer = new Proposer(this.port);
+        Paxos paxos = new Paxos(proposer, req);
+        boolean paxosResult = paxos.run();
+        if (!paxosResult) {
+            return "Commit failed.";
+        }
+//        output = paxos.commit();
+//        return output;
 
         String[] request = req.split("\\s", 3);
         if (request[0].equals(FileMode.READ)) {

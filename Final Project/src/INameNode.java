@@ -1,5 +1,7 @@
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.Queue;
+import java.util.Map;
 
 
 public interface INameNode extends Remote {
@@ -25,5 +27,7 @@ public interface INameNode extends Remote {
     void releaseFile(String fileName) throws RemoteException;
 
     void exit() throws RemoteException;
+
+    Map<String, Queue<Integer>> getFileToDataNode() throws RemoteException;
 
 }
